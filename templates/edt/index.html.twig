@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello EdtController!{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm"></div>
+        <div class="col-sm">Lundi</div>
+        <div class="col-sm">Mardi</div>
+        <div class="col-sm">Mercredi</div>
+        <div class="col-sm">Jeudi</div>
+        <div class="col-sm">Vendredi</div>
+    </div>
+
+    {% set heures = [
+        '8h00', '8h30',
+        '9h00', '9h30',
+        '10h00', '10h30',
+        '11h00', '11h30',
+        '12h00', '12h30',
+        '13h00', '13h30',
+        '14h00', '14h30',
+        '15h00', '15h30',
+        '16h00', '16h30',
+        '17h00', '17h30',
+        '18h00'
+    ] %}
+    {% set resteCours = 0 %}
+    {% set resteCoursJour = 0 %}
+    {% set h = 1 %}
+    {% set collection = [] %}
+
+    {% for heure in heures %}
+        {# Chaque heure #}
+        <div class="row">
+            <div class="col-sm">{{ heure }}</div>
+            {% for i in range(1, 6) %}
+                {# Chaque jour #}
+                {% set yaCours = false %}
+                {% for objet in collection %}
+                    {# Vérification de la collection #}
+                    {% if objet.jour == i and objet.heure == h %}
+                        <div class="col-sm"> suite cours </div>
+                        {% set yaCours = true %}
+                    {% endif %}
+                {% endfor %}
+
+                {% if not yaCours %}
+                    {% for cour in cours %}
+                        {% set j = {
+                            'lundi': 1,
+                            'mardi': 2,
+                            'mercredi': 3,
+                            'jeudi': 4,
+                            'vendredi': 5,
+                            'samedi': 6,
+                        }[cour.jour] ?? 0 %}
+
+                        {% if j == i and (((cour.debut / 2) - 7.5) * 2) == h %}
+                            <div class="col-sm"> j'ai cours </div>
+                            {% set yaCours = true %}
+                            {% set h2 = h + 1 %}
+                            {% if cour.duree > 1 %}
+                                {% for y in range(1, cour.duree - 1) %}
+                                    {# Ajouter à la collection pour les cours suivants #}
+                                    {% set miniCollection = {
+                                        "jour": i,
+                                        "heure": h2,
+                                    } %}
+                                    {% set collection = collection | merge([miniCollection]) %}
+                                    {% set h2 = h2 + 1 %}
+                                {% endfor %}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                {% if not yaCours %}
+                    <div class="col-sm">  </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {# Fin de chaque heure #}
+        {% set h = h + 1 %}
+    {% endfor %}
+</div>
+{% endblock %}

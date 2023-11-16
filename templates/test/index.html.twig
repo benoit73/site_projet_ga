@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TestController!{% endblock %}
+
+{% block body %}
+
+{% for eleves in eleve %}
+<div> {{eleves.nomEleve}} </div>
+{% endfor %}
+
+{% endblock %}
